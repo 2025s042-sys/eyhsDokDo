@@ -31,6 +31,16 @@ function getGeminiClient(): GoogleGenAI {
   return aiClient;
 }
 
+// Helper to clean JSON strings from markdown block formats
+function cleanJSONString(str: string): string {
+  let cleaned = str.trim();
+  if (cleaned.startsWith("```")) {
+    cleaned = cleaned.replace(/^```[a-zA-Z]*\n?/, "");
+    cleaned = cleaned.replace(/\n?```$/, "");
+  }
+  return cleaned.trim();
+}
+
 // Endpoint: Evaluate textbook drafts
 app.post("/api/evaluate-textbook", async (req, res) => {
   try {
@@ -105,7 +115,8 @@ ${content}
     });
 
     const resultText = response.text?.trim() || "{}";
-    const resultObj = JSON.parse(resultText);
+    const cleanedText = cleanJSONString(resultText);
+    const resultObj = JSON.parse(cleanedText);
 
     res.json(resultObj);
   } catch (error: any) {
@@ -167,7 +178,8 @@ app.post("/api/generate-reflection", async (req, res) => {
     });
 
     const resultText = response.text?.trim() || "{}";
-    const resultObj = JSON.parse(resultText);
+    const cleanedText = cleanJSONString(resultText);
+    const resultObj = JSON.parse(cleanedText);
 
     res.json(resultObj);
   } catch (error: any) {
