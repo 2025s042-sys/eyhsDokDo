@@ -1,0 +1,6 @@
+{
+  "name": "독도 영토 주권 교육 종합 교재",
+  "description": "지리적 특성, 역사적 사료 및 한일 갈등의 평화적 해결을 위한 중·고등용 역사 및 지리 융합 수업 보조 자료",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
