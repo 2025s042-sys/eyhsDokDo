@@ -72,11 +72,32 @@ export default function LessonFour() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "평가 요청에 실패했습니다.");
+        let msg = "평가 요청에 실패했습니다.";
+        try {
+          const contentType = response.headers.get("content-type");
+          if (contentType && contentType.includes("application/json")) {
+            const errorData = await response.json();
+            msg = errorData.error || msg;
+          } else {
+            const rawText = await response.text();
+            if (rawText.includes("구글") || rawText.includes("API")) {
+              msg = "API 인증 또는 정책 오류가 발생했습니다. 잠시 후 상단 설정에서 API Secrets 값을 점검해 주세요.";
+            } else {
+              msg = `서버 오류가 발생했습니다. (HTTP ${response.status})`;
+            }
+          }
+        } catch {
+          msg = `네트워크/서버 오류가 발생했습니다. (HTTP ${response.status})`;
+        }
+        throw new Error(msg);
       }
 
-      const evalResult: EvaluationResult = await response.json();
+      let evalResult: EvaluationResult;
+      try {
+        evalResult = await response.json();
+      } catch (parseError) {
+        throw new Error("서버로부터 올바른 형식의 응답을 받지 못했습니다. 잠시 후 다시 시도해 주세요.");
+      }
       setEvaluation(evalResult);
     } catch (err: any) {
       console.error(err);
@@ -110,11 +131,32 @@ export default function LessonFour() {
       });
 
       if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.error || "소감문 생성 도중 에러가 발생했습니다.");
+        let msg = "소감문 생성 도중 에러가 발생했습니다.";
+        try {
+          const contentType = response.headers.get("content-type");
+          if (contentType && contentType.includes("application/json")) {
+            const errData = await response.json();
+            msg = errData.error || msg;
+          } else {
+            const rawText = await response.text();
+            if (rawText.includes("구글") || rawText.includes("API")) {
+              msg = "API 인증 또는 정책 오류가 발생했습니다. 잠시 후 상단 설정에서 API Secrets 값을 점검해 주세요.";
+            } else {
+              msg = `서버 오류가 발생했습니다. (HTTP ${response.status})`;
+            }
+          }
+        } catch {
+          msg = `네트워크/서버 오류가 발생했습니다. (HTTP ${response.status})`;
+        }
+        throw new Error(msg);
       }
 
-      const data: ReflectionResult = await response.json();
+      let data: ReflectionResult;
+      try {
+        data = await response.json();
+      } catch (parseError) {
+        throw new Error("서버로부터 올바른 형식의 응답을 받지 못했습니다. 잠시 후 다시 시도해 주세요.");
+      }
       setReflectionResult(data);
     } catch (err: any) {
       console.error(err);
