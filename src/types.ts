@@ -50,3 +50,9 @@ export interface EvaluationResult {
   suggestions: string[];
   approverTitle: string;
 }
+
+export interface ReflectionResult {
+  title: string;
+  content: string;
+  hashtags: string[];
+}
