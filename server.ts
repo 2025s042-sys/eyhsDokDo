@@ -1,11 +1,19 @@
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
-import app from "./api/index";
+import evaluateTextbookHandler from "./api/evaluate-textbook";
+import generateReflectionHandler from "./api/generate-reflection";
 
 const PORT = 3000;
 
 async function startServer() {
+  const app = express();
+  app.use(express.json());
+
+  // API endpoints
+  app.post("/api/evaluate-textbook", evaluateTextbookHandler);
+  app.post("/api/generate-reflection", generateReflectionHandler);
+
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },
